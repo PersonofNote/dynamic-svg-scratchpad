@@ -80,16 +80,24 @@ onmousemove = function(e) {
     if(Math.abs(e.clientY-rect.top) < 150) {
         if (e.clientX > rect.left && e.clientX < rect.right) {
         points[0] = e.clientX;
-        if (mouseNew >= mousePrev) {
-            points[1] += (-(Math.floor(e.clientY-rect.top)/50));
-        } else if (mouseNew < mousePrev) {
-            points[1] -= (Math.floor(e.clientY-rect.top)/50);
+        if(e.clientY-rect.top <= 0){ //Cursor is above line
+        if (mouseNew < mousePrev) { //Cursor is moving up?
+            points[1] += ((Math.floor(e.clientY-rect.top)/20));
+        } else if (mouseNew >= mousePrev) {
+            points[1] -= (Math.floor(e.clientY-rect.top)/20);
         }
-       
+        }else if(e.clientY-rect.top > 0) { //Cursor is below line
+            if (mouseNew < mousePrev) {
+                points[1] -= ((Math.floor(e.clientY-rect.top)/20));
+            } else if (mouseNew >= mousePrev) {
+                points[1] += (Math.floor(e.clientY-rect.top)/20);
+            }
+        }    
         newCurve.setAttribute('stroke', aggro);
         newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
         }
         else {
+            //Reset
             newCurve.setAttribute('stroke', neutral);
             points[1] = startingPoint;
             newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
