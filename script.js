@@ -12,6 +12,7 @@ newCurve.setAttribute("id", "new-curve");
 newCurve.setAttribute("fill", "none");
 newCurve.setAttribute("stroke-width", "6");
 newCurve.setAttribute("stroke", neutral);
+newCurve.setAttribute("stroke-linecap", "round");
 //newCurve.setAttribute("d", "M 250 250 C 275 250 285 450 600 250 L 600 200 ");
 //newCurve.setAttribute("d", `M ${blx} ${bly} C ${blx} ${bly}, ${points}, ${brx} ${bry}`);
 newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
@@ -58,17 +59,33 @@ onclick = function(e){
 }
 */
 
+onclick = function(e) {
+    console.log(e.clientY);
+    console.log(e.clientY-rect.top);
+}
+
+var mousePrev = 0;
 
 onmousemove = function(e) {
+    var mouseNew = e.clientY;
     /**
      * If abs of mousex - rectx < x (or any of the permeutations of the sides),
-     * move control point to mousex, recty (or equaivalent).
+     * move control point to mousex, recty (or equivalent).
      * Then, move y (or equivalent) to maintain distance from (aggro range coordinate)
      * Remember to allow for the corners to move as well.
+     * Start with a line.
+     * Need to determine which way the mouse is moving
+     * Measure jerk of mouse and adjust severity of avoidance with an easing function. (Curves on Curves!)
      */
-
-    if(Math.abs(e.clientX-rect.top) < 200){
-        points[1] += (((e.clientX-rect.top)/100)*-1);
+    if(Math.abs(e.clientY-rect.top) < 150) {
+        if (e.clientX > rect.left && e.clientX < rect.right) {
+        points[0] = e.clientX;
+        if (mouseNew >= mousePrev) {
+            points[1] += (-(Math.floor(e.clientY-rect.top)/50));
+        } else if (mouseNew < mousePrev) {
+            points[1] -= (Math.floor(e.clientY-rect.top)/50);
+        }
+       
         newCurve.setAttribute('stroke', aggro);
         newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
         }
@@ -77,7 +94,8 @@ onmousemove = function(e) {
             points[1] = startingPoint;
             newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
         }
-
+    }
+    mousePrev = e.clientY;
 }
 
 /**
