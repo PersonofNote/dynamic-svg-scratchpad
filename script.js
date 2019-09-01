@@ -1,7 +1,7 @@
 const environment = document.getElementById('environment');
 const neutral = "#3895D3";
 const aggro = "#FF6600";
-var aggroDistance = 100;
+var aggroRange = 100;
 const startingPoint = 250;
 var points = [350 , startingPoint];
 
@@ -59,11 +59,6 @@ onclick = function(e){
 }
 */
 
-onclick = function(e) {
-    console.log(e.clientY);
-    console.log(e.clientY-rect.top);
-}
-
 var mousePrev = 0;
 
 onmousemove = function(e) {
@@ -77,7 +72,7 @@ onmousemove = function(e) {
      * Need to determine which way the mouse is moving
      * Measure jerk of mouse and adjust severity of avoidance with an easing function. (Curves on Curves!)
      */
-    if(Math.abs(e.clientY-rect.top) < 150) {
+    if(Math.abs(e.clientY-rect.top) <= aggroRange) { //Cursor is in aggro range.
         if (e.clientX > rect.left && e.clientX < rect.right) {
         points[0] = e.clientX;
         if(e.clientY-rect.top <= 0){ //Cursor is above line
@@ -86,22 +81,23 @@ onmousemove = function(e) {
         } else if (mouseNew >= mousePrev) {
             points[1] -= (Math.floor(e.clientY-rect.top)/20);
         }
+        if (points[1] < startingPoint) points[1] == startingPoint; //Prevent line from moving toward mouse at edge of aggro range
         }else if(e.clientY-rect.top > 0) { //Cursor is below line
             if (mouseNew < mousePrev) {
                 points[1] -= ((Math.floor(e.clientY-rect.top)/20));
             } else if (mouseNew >= mousePrev) {
                 points[1] += (Math.floor(e.clientY-rect.top)/20);
             }
+            if (points[1] >= startingPoint) points[1] == startingPoint;
         }    
         newCurve.setAttribute('stroke', aggro);
         newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
         }
-        else {
-            //Reset
-            newCurve.setAttribute('stroke', neutral);
-            points[1] = startingPoint;
-            newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
-        }
+    }
+    else { //Cursor is out of aggro range; reset.  
+        newCurve.setAttribute('stroke', neutral);
+        points[1] = startingPoint;
+        newCurve.setAttribute("d", `M 200 250 C 200 250, ${points}, 500 250`);
     }
     mousePrev = e.clientY;
 }
