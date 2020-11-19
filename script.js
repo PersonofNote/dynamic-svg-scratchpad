@@ -117,3 +117,46 @@ if (debugMode) {
  * preceding it, because you want to curve from the same place you put down the pencil.
  *
  */
+
+
+const pixelCanvas = document.getElementById('pixel-canvas');
+
+const alien = [ 
+                [1,1,1,1,1],
+                [1,0,1,0,1],
+                [1,1,1,1,1],
+                [0,1,0,1,0],
+                [0,1,0,1,0]
+              ]
+var x = 0;
+var y = 0;
+const iterator = [x,y]
+
+function makeSVG(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    y = i;
+    x = 0;
+    var row = arr[i]
+    for (let j= 0; j < row.length; j++){
+      x = j;
+      if (row[j] === 1) {
+        const pixel = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+        pixel.setAttribute('height',1.01);
+        pixel.setAttribute('width',1.01);
+        pixel.setAttribute('stroke','none');
+        pixel.setAttribute('fill','blue');
+        pixel.setAttribute('x', x);
+        pixel.setAttribute('y', y);
+        //pixel.setAttribute('transform', `translate(${(Math.floor(Math.random() * Math.floor(5)))}, ${(Math.floor(Math.random() * Math.floor(5)))})`)
+        pixelCanvas.appendChild(pixel);
+        pixel.setAttribute('opacity', 1);
+      }else {
+        //
+      }
+    }
+  }
+}
+
+makeSVG(alien)
+
+              
