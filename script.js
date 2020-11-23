@@ -141,8 +141,8 @@ function makeSVG(arr) {
       x = j;
       if (row[j] === 1) {
         const pixel = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
-        pixel.setAttribute('height',1.01);
-        pixel.setAttribute('width',1.01);
+        pixel.setAttribute('height',1.006);
+        pixel.setAttribute('width',1.006);
         pixel.setAttribute('stroke','none');
         pixel.setAttribute('fill','blue');
         pixel.setAttribute('x', x);
@@ -157,6 +157,30 @@ function makeSVG(arr) {
   }
 }
 
-makeSVG(alien)
+//makeSVG(alien)
+
+
+const pixels = document.getElementsByTagName('rect');
+
+const paths = document.getElementsByTagName('path');
+
+
+
+//gsap.from(pixels, {opacity: 0, duration: 3});
+
+/*
+pixels.forEach((pixel, i) => {
+  gsap.from(pixel, {opacity: 0, duration: 3 * i});
+});
+*/
+
+
+for (let i = 0; i < pixels.length; i++) {
+  let randomX = Math.random() < 0.5 ? Math.floor(Math.random() * Math.floor(50)) : -(Math.floor(Math.random() * Math.floor(50)))
+  let randomY = Math.random() < 0.5 ? Math.floor(Math.random() * Math.floor(25)) : -(Math.floor(Math.random() * Math.floor(25)))
+  console.log(pixels[i]);
+  const pixel = pixels[i]
+  gsap.from(pixel, {opacity: 0, x: randomX, y: randomY, duration: 3 * (1 - i/1000), ease: Back.easeInOut.config(1.1) });
+}
 
               
